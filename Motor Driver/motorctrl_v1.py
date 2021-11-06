@@ -89,6 +89,7 @@ def portInitialization(portname, dxlIDs):
         else:
             print("Dynamixel", motorID,
                   "has been successfully connected")
+            print("-------------------------------------")
     
 
 def dxlPresAngle(dxlIDs):
@@ -106,7 +107,7 @@ def dxlPresAngle(dxlIDs):
     for id in range(idNum): #Converts the position into angles
         dxl_present_angle[id] = _map(dxl_present_position[id], 0, 4095, 0, 360)
     print("Present angles are: ", dxl_present_angle)
-
+    print("-------------------------------------")
     return (dxl_present_angle)
 
 
@@ -119,6 +120,7 @@ def dxlSetVelo(vel_array, dxlIDs):
                     WriteMotorData(motorIndex, ADDR_PROFILE_VELOCITY, vel_array[id])
     else:
         print("ERROR: Number of velocity inputs not matching with number of DXL ID inputs!")
+    print("-------------------------------------")
     dxlGetVelo(dxlIDs)
 
 
@@ -132,6 +134,7 @@ def dxlGetVelo(dxlIDs):
                 if (DXL_ID[motorIndex] == dxlIDs[id]): 
                     dxl_present_velocity[id] = ReadMotorData(motorIndex, ADDR_PROFILE_VELOCITY)
     print("Velocities are ", dxl_present_velocity)
+    print("-------------------------------------")
     return (dxl_present_velocity)
 
 
@@ -174,6 +177,7 @@ def motorRunWithInputs(angle_inputs, dxlIDs):
 
             #Motor movement completes and motor movement status to be sent out
             # ------------------------------------------------------------------------------------------------------------------------------------------------------
+            print("-------------------------------------")
             return movementStatus
     else:
         print("ERROR: Number of angle inputs not matching with number of DXL ID inputs")

@@ -89,7 +89,7 @@ def portInitialization(portname, dxlIDs):
         else:
             print("Dynamixel", motorID,
                   "has been successfully connected")
-            print("-------------------------------------")
+    print("-------------------------------------")
     
 
 def dxlPresAngle(dxlIDs):

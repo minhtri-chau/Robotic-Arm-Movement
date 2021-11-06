@@ -139,7 +139,7 @@ def motorRunWithInputs(angle_inputs, dxlIDs):
     idNum = len(dxlIDs)
 
     #Format is [base, bicep, forearm, wrist, claw]
-    if (len(angle_inputs == idNum)):
+    if (len(angle_inputs) == idNum):
         dxl_goal_angle = angle_inputs
         dxl_goal_inputs = [0] * idNum
         dxl_end_position = [0] * idNum

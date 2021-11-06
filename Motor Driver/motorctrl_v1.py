@@ -23,6 +23,22 @@ else:
         return ch
 
 
+#********* DYNAMIXEL Model definition *********   
+PROTOCOL_VERSION = 2 #Dynamixel SDK has two operating modes: Protocol 1 or 2. This code uses 2
+BAUDRATE = 1000000
+
+    #List of all the addresses from the Control Table that is used for operation
+ADDR_PRESENT_POSITION = 132 #Address of the positions of the motors
+ADDR_PROFILE_VELOCITY = 112 #Address of the velocity of the motors
+ADDR_GOAL_POSITION = 116 #Address of goal position
+ADDR_MOVING = 122 #Address of value that states if motor is moving or not
+ADDR_MOVING_STATUS = 123
+DXL_MOVING_STATUS_THRESHOLD = 10    # Dynamixel moving status threshold
+LEN_GOAL_POSITION = 4 #Byte Length of goal position
+LEN_PRESENT_POSITION = 4 #Byte length of present positiond
+ADDR_TORQUE_ENABLE = 64
+TORQUE_ENABLE = 1
+
 #******MOTOR DRIVE FUNCTIONS*******
 #this is where we will put hardware team functions
 
@@ -30,37 +46,17 @@ else:
 #Input is portname, baudrate, and Dynamixel motor IDs
 #Portname is the serial port assigned to the U2D2. Windows: "COM*", Linux: "/dev/ttyUSB*", Mac: "/dev/tty.usbserial-*"
 #To check portname, please refer to either the Dynamixel Wizard or "Serial Ports" in Device Manager
-#Baudrate is the rate of information transfer via serial ports. Linux is 57600 and Windows is 1000000
+#Baurate is the rate of information transfer via serial ports. Linux is 57600 and Windows is 1000000
 #Dynamixel motor IDs can be found by using the Dynamixel Wizard.
 #There is no output from this function
-def portInitialization(portname, baudrate, baseID, bicepID, forearmID, wristID, clawID):
+def portInitialization(portname, baseID, bicepID, forearmID, wristID, clawID):
+
     global DEVICENAME
-    DEVICENAME = portname  # All the motors share the same port when connected in series
-    global PROTOCOL_VERSION #Dynamixel SDK has two operating modes: Protocol 1 or 2. This code uses 2
-    PROTOCOL_VERSION = 2 # Initialize PortHandler instance and PacketHandler instance
+    DEVICENAME = portname  # All the motors share the same port when connected in series  
     global portHandler
-    portHandler = PortHandler(DEVICENAME)
+    portHandler = PortHandler(DEVICENAME) # Initialize PortHandler instance and PacketHandler instance
     global packetHandler
     packetHandler = PacketHandler(PROTOCOL_VERSION)
-    device_index = 0
-
-    #List of all the addresses from the Control Table that is used for operation
-    global ADDR_PRESENT_POSITION
-    ADDR_PRESENT_POSITION = 132 #Address of the positions of the motors
-    global ADDR_PROFILE_VELOCITY
-    ADDR_PROFILE_VELOCITY = 112 #Address of the velocity of the motors
-    global ADDR_GOAL_POSITION
-    ADDR_GOAL_POSITION = 116 #Address of goal position
-    global ADDR_MOVING
-    ADDR_MOVING = 122 #Address of value that states if motor is moving or not
-    global ADDR_MOVING_STATUS
-    ADDR_MOVING_STATUS = 123
-    global DXL_MOVING_STATUS_THRESHOLD
-    DXL_MOVING_STATUS_THRESHOLD = 10    # Dynamixel moving status threshold
-    global LEN_GOAL_POSITION
-    LEN_GOAL_POSITION = 4 #Byte Length of goal position
-    global LEN_PRESENT_POSITION
-    LEN_PRESENT_POSITION = 4 #Byte length of present position
 
     if portHandler.openPort(): #Enables communication between computer and motors
         print("Succeeded to open the port")
@@ -69,8 +65,6 @@ def portInitialization(portname, baudrate, baseID, bicepID, forearmID, wristID, 
         getch()
         quit()
 
-    global BAUDRATE
-    BAUDRATE = baudrate
     # Set port baudrate
     if portHandler.setBaudRate(BAUDRATE): #Sets rate of information transfer
         print("Succeeded to change the baudrate")
@@ -79,9 +73,6 @@ def portInitialization(portname, baudrate, baseID, bicepID, forearmID, wristID, 
         getch()
         quit()
 
-    global ADDR_TORQUE_ENABLE # Set memory address for Torque Enable
-    ADDR_TORQUE_ENABLE = 64
-    TORQUE_ENABLE = 1
 
     global DXL_ID # Set the motor ID for each dynamixel. ID 0,1,2 is base/bicep/forearm motors
     DXL_ID = [baseID, bicepID, forearmID, wristID, clawID]

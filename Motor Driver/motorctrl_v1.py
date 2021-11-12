@@ -392,43 +392,49 @@ def simPosCheck(dxl_goal_inputs, dxlIDs):
     
 ##Old Test Cases
 #portInitialization(portname, baudrate, baseID, bicepID, forearmID):
-"""portInitialization('COM3', 1000000, 1, 2, 3, 4, 5)
+portInitialization('COM3', [5, 6])
 
-dxlSetVelo([0,0,0,0,0])
+#portInitialization('COM3', 1000000, 1, 3)
+
+dxlSetVelo([0,0], [5,6])
 #dxl_current_velocity = dxlGetVelo()
 #print(dxl_current_velocity)
 
-angles_before = dxlPresAngle()
-print(angles_before)
+angles_before = dxlPresAngle([5, 6])
+#print(angles_before)
 
-motorRunWithInputs([200,300,100,100,200])
+motorRunWithInputs([200, 300],[5, 6])
 
-angles_after = dxlPresAngle()
-print(angles_after)
+angles_after = dxlPresAngle([6])
+angles_after = dxlPresAngle([5])
+
+dxlSetVelo([90,90], [5,6])
+#print(angles_after)
+
+motorRunWithInputs([0,0], [5, 6])
+
+angles_after = dxlPresAngle([5, 6])
+
+portTermination()
+
+#---------------------------------------------2nd test
+portInitialization('COM3', [5, 6])
 
 
-angles_before = dxlPresAngle()
-print(angles_before)
+dxlSetVelo([90,90], [5, 6])
+#dxl_current_velocity = dxlGetVelo()
+#print(dxl_current_velocity)
 
-motorRunWithInputs([0,0,0])
+angles_before = dxlPresAngle([5, 6])
+#print(angles_before)
 
-angles_after = dxlPresAngle()
-print(angles_after)
+simMotorRun([180, 360], [5,6])
 
-angles_before = dxlPresAngle()
-print(angles_before)
 
-motorRunWithInputs([100,200,300,90,90])
+#print(angles_after)
+dxlSetVelo([0,0], [5, 6])
+simMotorRun([0,0], [5, 6])
 
-angles_after = dxlPresAngle()
-print(angles_after)
+angles_after = dxlPresAngle([6])
 
-angles_before = dxlPresAngle()
-print(angles_before)
-
-motorRunWithInputs([50,150,250,120,300])
-
-angles_after = dxlPresAngle()
-print(angles_after)
-
-portTermination()"""
+portTermination()

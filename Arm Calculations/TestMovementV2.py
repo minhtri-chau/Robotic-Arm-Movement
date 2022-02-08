@@ -255,7 +255,7 @@ def set_location(xyzdict):
         # XYZtemp = getXYZ(thetaBaseN[0], thetaBicepN, thetaForearmN)
         # print('XYZ Value:'+str(XYZtemp))
 
-        return thetaBaseN[1], finalBicep, finalForearm, finalWrist;
+        return thetaBaseN[1], finalBicep, finalForearm, finalWrist
 
         if not(BICEP_L_DOWN<thetaBicepND<BICEP_L_UP):
             print("BICEP Can't Rotate That Far, Current Limits are: "+str(BICEP_L_DOWN)+"  -  "+str(BICEP_L_UP))

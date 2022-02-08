@@ -21,8 +21,8 @@ WRIST_LENGTH = 146.6
 #WRIST_L_UP = 89
 #WRIST_L_DOWN = -115
 
-BASE_L_UP= 90
-BASE_L_DOWN = 270
+BASE_L_UP= 270
+BASE_L_DOWN = 90
 BICEP_L_DOWN= 155
 BICEP_L_UP = 245
 FOREARM_L_UP = 220
@@ -46,18 +46,21 @@ ThetaWristND = 0
 
 #Arm offset angles for given motor positions
 #DIRECTION CURRENTLY UNIMPLEMENTED
-BASE_OFFSET = 0
+#below are for math calculations, only base seems to be used
+BASE_OFFSET = math.pi/2
 BASE_DIRECTION = 1
 BICEP_OFFSET = 0
 BICEP_DIRECTION = 1
-#################################################################
-#################################################################
-#################################################################
-#################################################################
-#FOREARM_OFFSET = math.radians(-8) for compensating for 8 degrees if needed again
 FOREARM_OFFSET = 0
 FOREARM_DIRECTION = 1
 WRIST_OFFSET = 0
+WRIST_DIRECTION = 1
+#below are for end angle calculations, done before strings start to print
+BICEP_OFFSET1 = math.pi/2
+BICEP_DIRECTION1 = 1
+FOREARM_OFFSET1 = 3*math.pi/4
+FOREARM_DIRECTION = 1
+WRIST_OFFSET1 = math.pi
 WRIST_DIRECTION = 1
 
 #Arm offset angles for given motor positions
@@ -207,6 +210,7 @@ def set_location(xyzdict):
     #calculate the theta for the base
     thetaBaseN = calcBaseTheta(Xn,Yn)
 
+
     if BASE_L_DOWN <= thetaBaseN[1] <= BASE_L_UP :
         #guessBicepFromTriangles is an optimization variable that helps reduce the number of cycles.
         print(str([Xn,Yn,Zn]) + ' XYZ after wrist adjustment')
@@ -237,13 +241,21 @@ def set_location(xyzdict):
         thetaBaseND = thetaBaseN[1]
         thetaWristND = calcWristTheta(thetaBicepND,thetaForearmND,modeStatus)[1]
 
+        finalBicep = thetaBicepND + 90
+        finalForearm = thetaForearmND + 45 + 135
+        finalWrist = thetaWristND + 180
+
+
+
         print('BASE ANGLE = ' + str(thetaBaseND))
-        print('BICEP ANGLE = ' + str(thetaBicepND))
-        print('FOREARM ANGLE = ' + str(thetaForearmND + 45))
-        print('WRIST ANGLE = ' + str(thetaWristND))
+        print('BICEP ANGLE = ' + str(finalBicep))
+        print('FOREARM ANGLE = ' + str(finalForearm))
+        print('WRIST ANGLE = ' + str(finalWrist))
         print('Number of Cycles For Answer = ' + str(countcycles))
         # XYZtemp = getXYZ(thetaBaseN[0], thetaBicepN, thetaForearmN)
         # print('XYZ Value:'+str(XYZtemp))
+
+        return thetaBaseN[1], finalBicep, finalForearm, finalWrist;
 
         if not(BICEP_L_DOWN<thetaBicepND<BICEP_L_UP):
             print("BICEP Can't Rotate That Far, Current Limits are: "+str(BICEP_L_DOWN)+"  -  "+str(BICEP_L_UP))
@@ -258,6 +270,8 @@ def set_location(xyzdict):
     else:
         print('BASE ANGLE = ' + str(thetaBaseN[1]))
         print("Base Can't Rotate That Far, Current Limits are: "+str(BASE_L_DOWN)+"  -  "+str(BASE_L_UP))
+
+
 
 
 

@@ -1,7 +1,7 @@
-from TestMovementV2 import *
+from TestMovementV3 import *
 from motorctrl_v1 import * 
 
-
+import time
 
 baseA = 180
 bicepA = 180
@@ -19,22 +19,25 @@ print("Bicep angle received: " + str(bicepA))
 print("Forearm angle received: " + str(forearmA))
 print("Wrist angle received: " + str(wristA))
 
-upperarm = [bicepA, forearmA]
-basewrist = [baseA, wristA]
+goal_angles = [180, baseA+45, bicepA, forearmA, wristA]
 
-portInitialization('COM3', [5, 6])
+portInitialization('COM8', [0, 1, 2, 3, 4])
 
 
-dxlSetVelo([90,90], [5, 6])
+dxlSetVelo([30,30,30,30,30], [0, 1, 2, 3, 4])
 
-angles_before = dxlPresAngle([5, 6])
+angles_before = dxlPresAngle([0, 1, 2, 3, 4])
 
-motorRunWithInputs(upperarm, [5,6])
+motorRunWithInputs([30, 180, 90, 233, 174],[0, 1, 2, 3, 4])
 
-motorRunWithInputs(basewrist, [5,6])
+motorRunWithInputs(goal_angles,[0, 1, 2, 3, 4])
 
-motorRunWithInputs([0,0], [5,6])
+time.sleep(30)
 
-angles_after = dxlPresAngle([5, 6])
+motorRunWithInputs([30, 180, 90, 233, 174],[0, 1, 2, 3, 4])
+
+#motorRunWithInputs([0,0], [5,6])
+
+angles_after = dxlPresAngle([0, 1, 2, 3, 4])
 
 portTermination()

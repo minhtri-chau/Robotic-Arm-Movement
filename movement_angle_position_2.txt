@@ -1,0 +1,13 @@
+Down facing - Open: [143, 216, 168, 203, 55]
+
+Down facing - Close: [196, 216, 168, 203, 55]
+
+Lift up - Facing down: [196, 221, 182, 181, 58]
+
+Lift up - Facing forward: [196, 226, 156, 255, 80]
+
+Extend while holding: [196, 226, 161, 189, 146]
+
+Point straight up: [196, 229, 144, 199, 249] 
+
+Lower to ground: [196, 219, 191, 175, 60]

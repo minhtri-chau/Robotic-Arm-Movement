@@ -392,6 +392,49 @@ def simPosCheck(dxl_goal_inputs, dxlIDs):
     
 ##Old Test Cases
 #portInitialization(portname, baudrate, baseID, bicepID, forearmID):
+
+# dxlIDs =  [0, 1, 2, 3, 4]
+# portInitialization('COM8', [0, 1, 2, 3, 4])
+# dxlPresAngle(dxlIDs)
+# time.sleep(5)
+# portTermination()
+
+dxlIDs =  [0, 1, 2, 3, 4]
+portInitialization('COM8', [0, 1, 2, 3, 4])
+dxlSetVelo([20,20,20,20,20], [0, 1, 2, 3, 4])
+
+down_facing_open =  [143, 216, 168, 203, 55]
+down_facing_close = [205, 216, 168, 203, 55]
+liftup_facingdown = [205, 221, 182, 181, 58]
+liftup_facingfw =   [205, 226, 156, 255, 80]
+extend_holding =    [205, 226, 161, 189, 146]
+point_straight_up = [205, 229, 144, 199, 249]
+lower_to_ground =   [205, 219, 191, 175, 60]
+wrist_up = [200]
+
+motorRunWithInputs(down_facing_open, dxlIDs)
+time.sleep(5)
+motorRunWithInputs(down_facing_close, dxlIDs)
+time.sleep(1)
+motorRunWithInputs(liftup_facingdown, dxlIDs)
+time.sleep(1)
+motorRunWithInputs(wrist_up, [4])
+time.sleep(1)
+motorRunWithInputs(liftup_facingfw, dxlIDs)
+time.sleep(1)
+motorRunWithInputs(wrist_up, [4])
+time.sleep(1)
+#motorRunWithInputs(extend_holding, dxlIDs)
+#time.sleep(3)
+motorRunWithInputs(point_straight_up, dxlIDs)
+time.sleep(1)
+motorRunWithInputs(wrist_up, [4])
+time.sleep(1)
+motorRunWithInputs(lower_to_ground, dxlIDs)
+time.sleep(1)
+
+portTermination()
+
 """portInitialization('COM3', [5, 6])
 
 #portInitialization('COM3', 1000000, 1, 3)

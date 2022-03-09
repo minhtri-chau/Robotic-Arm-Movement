@@ -82,16 +82,16 @@ def calcForearmTheta(P, Z,thetaBicep):
     # Zf is verticle height of the forearm
     Zf = Z-BASE_HEIGHT-BICEP_LENGTH*math.sin(thetaBicep-BICEP_OFFSET)
     if FOREARM_LENGTH >= Zf:     
-        print("Current BICEP angle:   "+ str([math.degrees(thetaBicep)]))   
-        print("Current Z is:   "+ str([Z]))
-        print("Remaining Z is:   "+ str([Zf]))
+        #print("Current BICEP angle:   "+ str([math.degrees(thetaBicep)]))   
+        #print("Current Z is:   "+ str([Z]))
+        #print("Remaining Z is:   "+ str([Zf]))
         # Z_offset is to orienate the forearm to move from its 90 degree horizontal plane
         Z_OFFSET = math.radians(FOREARM_L_MID) - thetaBicep + 2*BICEP_OFFSET
         thetaForearmR=math.asin(Zf/FOREARM_LENGTH) + Z_OFFSET
         thetaForearmD=math.degrees(thetaForearmR)
         phiForearmR=math.asin(Zf/FOREARM_LENGTH)
-        print("Current Forearm angle:   "+ str([thetaForearmD]))
-        print("Current phi  angle:   "+ str([math.degrees(phiForearmR)]))
+        #print("Current Forearm angle:   "+ str([thetaForearmD]))
+        #print("Current phi  angle:   "+ str([math.degrees(phiForearmR)]))
 
     return ([thetaForearmR,thetaForearmD, phiForearmR])
     #else:

@@ -57,11 +57,12 @@ BASE_DIRECTION = 1
 BICEP_OFFSET = math.pi/2 
 BICEP_DIRECTION = 1
 #FOREARM_OFFSET used in forearm calculation, to reset forearm from having 90 degrees front
-FOREARM_OFFSET = math.radians(FOREARM_L_MID) - math.pi/2
+FOREARM_OFFSET = math.pi/4
 FOREARM_DIRECTION = 1
 WRIST_OFFSET = math.pi/2
 WRIST_DIRECTION = 1
-
+ELBOW_OFFSET = math.pi/2
+ELBOW_DIRECTION = 1
 
 #Various Increments
 TOLERANCE = 1 #this is how close it will try and get in mm to the target location
@@ -69,9 +70,6 @@ R_INCREMENT = math.radians(0.1) #this controls by how much it will try to increm
 
 
 
-PICKUP = {"X":135,      #these are to be determined
-        "Y":135,       #these are to be determined
-        "Z":350}        #these are to be determined
 
 
 
@@ -83,12 +81,18 @@ PICKUP = {"X":135,      #these are to be determined
 def calcForearmTheta(P, Z,thetaBicep):
     # Zf is verticle height of the forearm
     Zf = Z-BASE_HEIGHT-BICEP_LENGTH*math.sin(thetaBicep-BICEP_OFFSET)
-    if FOREARM_LENGTH >= Zf:        
-        # Z_offset is to orienate the forearm to move from its 90 degree front set to FOREARM_L_MID
-        Z_OFFSET = math.pi/2 + FOREARM_OFFSET + (math.radians(BICEP_L_MID)-thetaBicep)
-        thetaForearmR=math.asin(Zf/FOREARM_LENGTH)+Z_OFFSET
+    if FOREARM_LENGTH >= Zf:     
+        print("Current BICEP angle:   "+ str([math.degrees(thetaBicep)]))   
+        print("Current Z is:   "+ str([Z]))
+        print("Remaining Z is:   "+ str([Zf]))
+        # Z_offset is to orienate the forearm to move from its 90 degree horizontal plane
+        Z_OFFSET = math.radians(FOREARM_L_MID) - thetaBicep + 2*BICEP_OFFSET
+        thetaForearmR=math.asin(Zf/FOREARM_LENGTH) + Z_OFFSET
         thetaForearmD=math.degrees(thetaForearmR)
         phiForearmR=math.asin(Zf/FOREARM_LENGTH)
+        print("Current Forearm angle:   "+ str([thetaForearmD]))
+        print("Current phi  angle:   "+ str([math.degrees(phiForearmR)]))
+
     return ([thetaForearmR,thetaForearmD, phiForearmR])
     #else:
         #print('testing point #3:  forearm not long enough')
@@ -115,8 +119,10 @@ def calcWristTheta(thetaBicep, thetaForearm, statusMode):
 # where P is the 'roe' the projection of the distance on the x-y plane
 # Z is the height above the x-y plane
 def getPZ(Zold, ThetaBi, ThetaFo):
-    P = FOREARM_LENGTH*math.cos(ThetaFo-FOREARM_OFFSET)+BICEP_LENGTH*math.cos(ThetaBi-BICEP_OFFSET)
-    Z = Zold - BASE_HEIGHT+FOREARM_LENGTH*math.sin(-(ThetaFo-FOREARM_OFFSET))+BICEP_LENGTH*math.sin(ThetaBi+BICEP_OFFSET)
+    P = FOREARM_LENGTH*math.cos(ThetaFo) + BICEP_LENGTH*math.cos(ThetaBi-BICEP_OFFSET)
+    #Z = Zold + FOREARM_LENGTH*math.sin(ThetaFo) + BICEP_LENGTH*math.sin(ThetaBi+BICEP_OFFSET)
+    Z = FOREARM_LENGTH*math.sin(ThetaFo) + BICEP_LENGTH*math.sin(ThetaBi-BICEP_OFFSET)  + BASE_HEIGHT
+
     #print('rho = ' + str(P))
     return([P, Z])
 
@@ -130,21 +136,21 @@ def elbowCorrectionForPZ(rho, z, ThetaBiN):
     #to get closer is to decrease the distance
     ####P = rho + ELBOW_LENGTH*math.cos(adjustedThetaBiN)
     #Z can either be moved closer or further from its origin by the elbow given the limits of the bicep
-    if ThetaBiN > BICEP_L_MID:
-        Z = z + ELBOW_LENGTH*math.sin(ThetaBiN)  
-        P = rho + ELBOW_LENGTH*math.cos(ThetaBiN)
+    #if ThetaBiN > BICEP_L_MID:
+    Z = z + ELBOW_LENGTH*math.sin(ThetaBiN)  
+    P = rho + ELBOW_LENGTH*math.cos(ThetaBiN)
    # if ThetaBiN == 190.95:
       #  Z = z - ELBOW_LENGTH*math.sin(adjustedThetaBiN)  
        # P = rho
     #if BICEP_L_MID > ThetaBiN < 190.95:
        # Z = z - ELBOW_LENGTH*math.sin(adjustedThetaBiN)  
        # P = rho + ELBOW_LENGTH*math.cos(adjustedThetaBiN)
-    elif ThetaBiN == BICEP_L_MID:  # rho is closer
-        Z = z  
-        P = rho - ELBOW_LENGTH  ######*math.cos(adjustedThetaBiN) cos(180) = -1  
-    elif ThetaBiN < BICEP_L_MID:   # rho is closer
-        Z = z + ELBOW_LENGTH*math.sin(ThetaBiN) 
-        P = rho + ELBOW_LENGTH*math.cos(ThetaBiN)
+    #elif ThetaBiN == BICEP_L_MID:  # rho is closer
+       # Z = z  
+       # P = rho - ELBOW_LENGTH  ######*math.cos(adjustedThetaBiN) cos(180) = -1  
+    #elif ThetaBiN < BICEP_L_MID:   # rho is closer
+     #   Z = z + ELBOW_LENGTH*math.sin(ThetaBiN) 
+      #  P = rho + ELBOW_LENGTH*math.cos(ThetaBiN)
         #print('rho = ' + str(ELBOW_LENGTH*math.cos(ThetaBiN)))
         #print('Bicep angle = ' + str(math.degrees(ThetaBiN)))
 
@@ -212,6 +218,9 @@ def findATriangleAngle(A,B,C):
 
 
 
+PICKUP = {"X":150,      #these are to be determined
+        "Y":150,       #these are to be determined
+        "Z":100}        #these are to be determined
 
 #takes coordinates and sends angles to motors
 #Takes dictionary of "X", "Y", "Z"
@@ -224,22 +233,28 @@ def set_location(xyzdict):
 
     #Calculate the ideal projection on the x-y plane
     pideal = calcDist(Xn,Yn)
+    #Zn = Zn - BASE_HEIGHT
 
     # will implement a better setup for modestatus later, but want to find out about the setup first
     # might move this all to a seperate method
     # modeStatus of 0 for picking up (picks up from bottom, changing Zn by WRIST_LENGTH
-    # modeStatus of 1 for delivering (drops off from side, changing pideal by WRIST_LENGTH
-    modeStatus = 0
+    # modeStatus of 1 for picking up (picks up from above, changing Zn by WRIST_LENGTH
+    # modeStatus of 2 for delivering (drops off from side, changing pideal by WRIST_LENGTH
+    modeStatus = 2
     
     ####this is for when wrist is pointing straight up changing Zn
     if modeStatus == 0:
         Zn = Zn - WRIST_LENGTH
     
+    ####this is for when wrist is pointing straight down changing Zn
+    elif modeStatus == 1:
+        Zn = Zn + WRIST_LENGTH
+
     ####this is for when wrist is pointing sideways changing pideal
-    if modeStatus == 1:
+    elif modeStatus == 2:
         pideal = pideal - WRIST_LENGTH
 
-    print("For the given mode:     rho is " + str([pideal]) + "     Z is " + str([Zn]))
+    print("For the given mode:  the new rho is " + str([pideal]) + "   the new Z is " + str([Zn]))
 
     #calculate the theta for the base
     thetaBaseN = calcBaseTheta(Xn,Yn)
@@ -250,8 +265,6 @@ def set_location(xyzdict):
         thetaBicepN=guessBicepFromTriangles(Xn,Yn,Zn)
         print("Bicep angle guess based on triangles (rad and degrees) " + str([thetaBicepN]) + str([math.degrees(thetaBicepN)]))
         updatedPZ = elbowCorrectionForPZ(pideal, Zn, thetaBicepN)
-
-        print('BICEP ANGLE = ' + str(math.degrees(thetaBicepN)))
 
         print("Updated P and Z are:    rho is " + str([updatedPZ[0]]) + "     Z is " + str([updatedPZ[1]]))
         thetaForearmN = calcForearmTheta(updatedPZ[0],updatedPZ[1],thetaBicepN)   #  reworked

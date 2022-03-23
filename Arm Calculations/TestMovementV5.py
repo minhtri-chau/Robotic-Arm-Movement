@@ -36,6 +36,8 @@ ThetaBicepND = 0
 ThetaForearmND = 0
 ThetaWristND = 0
 
+#Arrays of new angles needed for pulling out/pushing in battery.
+#Currently set to 6 incrementations, to increase/decrease this, match the number of 0's to the amount of incrementations
 finalBicep_P = [0, 0, 0, 0, 0, 0]
 finalForearm_P = [0, 0, 0, 0, 0, 0]
 thetaWristND_P = [0, 0, 0, 0, 0, 0]
@@ -79,7 +81,7 @@ def calcForearmTheta(P, Z,thetaBicep):
 # It returns an array of the radian measurement and the degree measurement in that order
 def calcWristTheta(thetaBicep, thetaForearm, orientation):
     sumAngles = BICEP_L_MID - thetaBicep + FOREARM_L_MID - thetaForearm + 90
-    thetaWristD= sumAngles + orientation - 90
+    thetaWristD= sumAngles + orientation# - 90
     thetaWristR=math.radians(thetaWristD)
 
     return ([thetaWristR,thetaWristD])
@@ -175,13 +177,13 @@ def adjustRhoZ(P,Z,theta):
 # XYZ input below
 PICKUP = {"X":135,      
         "Y":135,       
-        "Z":120}      
+        "Z":60}      
 
 #Desired wrist orientation in degrees, able to select anything from 0 to 180 degrees
 #90 degrees is straight parallel to ground
 #180 degrees is pointing straight up
 #0 degrees is pointing straight down
-Wrist_Orientation_D = 45
+Wrist_Orientation_D = 40
 Wrist_Orientation_Rads = math.radians(Wrist_Orientation_D)
 
 # mode controls if arm is going to pull battery out or in, or just a simple movement
@@ -216,6 +218,7 @@ def set_location(xyzdict):
     #calculate the theta for the base
     thetaBaseN = calcBaseTheta(Xn,Yn)
     P_counter = 0
+    countcycles = 1
 
     while (P_counter <= P_LENGTH/P_INCREMENT):
 
@@ -231,7 +234,6 @@ def set_location(xyzdict):
             tempPZ = getPZ(Zn, thetaBicepN,thetaForearmN[2])
             
             #print("Temp  P and Z are:    rho is " + str([tempPZ[0]]) + "     Z is " + str([tempPZ[1]]))
-            countcycles = 0
 
 
         
@@ -263,11 +265,11 @@ def set_location(xyzdict):
 
             if MODE == 1:
                 pideal = pideal - P_INCREMENT*math.sin(Wrist_Orientation_Rads)
-                Zn = Zn + P_INCREMENT*math.sin(Wrist_Orientation_Rads)
+                Zn = Zn + P_INCREMENT*math.cos(Wrist_Orientation_Rads)
                 P_counter +=1
             elif MODE == 2:
-                pideal = pideal - P_INCREMENT*math.sin(Wrist_Orientation_Rads)
-                Zn = Zn + P_INCREMENT*math.sin(Wrist_Orientation_Rads)
+                pideal = pideal + P_INCREMENT*math.sin(Wrist_Orientation_Rads)
+                Zn = Zn - P_INCREMENT*math.cos(Wrist_Orientation_Rads)
                 P_counter +=1
             else:
                 P_counter = P_LENGTH/P_INCREMENT +1
@@ -276,13 +278,13 @@ def set_location(xyzdict):
 
 
 
-        print('BASE ANGLE = ' + str(thetaBaseN[1]))
-        print('BICEP ANGLE = ' + str(finalBicep))
-        print('FOREARM ANGLE = ' + str(finalForearm))
+    print('BASE ANGLE = ' + str(thetaBaseN[1]))
+    print('BICEP ANGLE = ' + str(finalBicep))
+    print('FOREARM ANGLE = ' + str(finalForearm))
+    print('WRIST ANGLE = ' + str(finalWrist))
+    print('Number of Cycles For Results = ' + str(countcycles))
 
-        print('WRIST ANGLE = ' + str(finalWrist))
-        print('Number of Cycles For Results = ' + str(countcycles))
-
+    if MODE !=0:
         print("Bicep Angles needed for pulling/pushing out battery: "+str(finalBicep_P[0])+"   "+str(finalBicep_P[1])+"   "+str(finalBicep_P[2])+"   "+str(finalBicep_P[3])+"   "+str(finalBicep_P[4])+"   "+str(finalBicep_P[5]))
         print("Forearm Angles needed for pulling/pushing out battery: "+str(finalForearm_P[0])+"   "+str(finalForearm_P[1])+"   "+str(finalForearm_P[2])+"   "+str(finalForearm_P[3])+"   "+str(finalForearm_P[4])+"   "+str(finalForearm_P[5]))
         print("Wrist Angles needed for pulling/pushing out battery: "+str(finalWrist_P[0])+"   "+str(finalWrist_P[1])+"   "+str(finalWrist_P[2])+"   "+str(finalWrist_P[3])+"   "+str(finalWrist_P[4])+"   "+str(finalWrist_P[5]))

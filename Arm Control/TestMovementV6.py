@@ -58,10 +58,10 @@ forearm_TO_wrist_Speed = 1
 #Various Increments
 TOLERANCE = 1 #this is how close it will try and get in mm to the target location
 R_INCREMENT = math.radians(0.1) #this controls by how much it will try to increment the degrees
-RECEIVER_LENGTH = 205 # length needed to pull/push battery free of receiver
-RECEIVER_SPACE_LENGTH = 25 # desired length for battery to clear in front of receiver
-DRONE_HOLDER_LENGTH = 205 # length needed to pull/push battery free of drone battery holder
-DRONE_SPACE_LENGTH = 25 # length needed to pull/push battery to clear in front of drone battery holder
+RECEIVER_LENGTH = 150 # length needed to pull/push battery free of receiver
+RECEIVER_SPACE_LENGTH = 10 # desired length for battery to clear in front of receiver
+DRONE_HOLDER_LENGTH = 150 # length needed to pull/push battery free of drone battery holder
+DRONE_SPACE_LENGTH = 10 # length needed to pull/push battery to clear in front of drone battery holder
 
 
 #This method returns the calculated forearm theta based on measurements of the arm
@@ -188,7 +188,7 @@ def calcSpeeds(bicepTheta,forearmTheta,wristTheta,PbicepTheta,PforearmTheta,Pwri
 ###############################################   USER INPUT DATA BELOW    #######################################
 # XYZ input below
 PICKUP = {"X":0,      
-        "Y":280,       
+        "Y":289,       
         "Z":200}      
 
 #Desired wrist orientation in degrees, able to select anything from 0 to 180 degrees

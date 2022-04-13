@@ -11,3 +11,5 @@ Extend while holding: [196, 226, 161, 189, 146]
 Point straight up: [196, 229, 144, 199, 249] 
 
 Lower to ground: [196, 219, 191, 175, 60]
+
+Wristuup = [250]

@@ -52,8 +52,8 @@ WRIST_OFFSET = math.pi/2
 ELBOW_OFFSET = math.pi/2
 
 #Motor speed ratios
-forearm_TO_bicep_Speed = 1
-bicep_TO_wrist_Speed = 1
+bicep_TO_forearm_Speed = 1
+forearm_TO_wrist_Speed = 1
 
 #Various Increments
 TOLERANCE = 1 #this is how close it will try and get in mm to the target location
@@ -179,10 +179,10 @@ def adjustRhoZ(P,Z,theta):
 #this method calculates the speeds of the motors for in synch movement when pulling/pushing
 # It takes the arguments of the forearm, bicep, and wrist both before and after push/pull motions
 # It returns the calculated speed ratios between the forearm/bicep and the bicep/wrist
-def calcSpeeds(forearmTheta,bicepTheta,wristTheta,PforearmTheta,PbicepTheta,PwristTheta):
-    forearm_TO_bicep_Speed = abs((forearmTheta-PforearmTheta)/(bicepTheta-PbicepTheta))
-    bicep_TO_wrist_Speed = abs((bicepTheta-PbicepTheta)/(wristTheta-PwristTheta))
-    return ([forearm_TO_bicep_Speed,bicep_TO_wrist_Speed])
+def calcSpeeds(bicepTheta,forearmTheta,wristTheta,PbicepTheta,PforearmTheta,PwristTheta):
+    bicep_TO_forearm_Speed = abs((bicepTheta-PbicepTheta)/(forearmTheta-PforearmTheta))
+    forearm_TO_wrist_Speed = abs((forearmTheta-PforearmTheta)/(wristTheta-PwristTheta))
+    return ([bicep_TO_forearm_Speed,forearm_TO_wrist_Speed])
 
 
 ###############################################   USER INPUT DATA BELOW    #######################################
@@ -277,13 +277,13 @@ def set_location(xyzdict):
                 finalWrist = thetaWristND 
 
             # below will assign the second set of motor angles for movement for the push/pull motion
-            if P_counter != 0:
+            elif P_counter != 0:
                 finalBicep_P = math.degrees(thetaBicepN)
                 finalForearm_P = (thetaForearmN[1])
                 thetaWristND_P = calcWristTheta(finalBicep_P,finalForearm_P,Wrist_Orientation_D)[1]
                 finalWrist_P = thetaWristND_P
-                forearm_TO_bicep_Speed = calcSpeeds(finalForearm,finalBicep,finalWrist,finalForearm_P,finalBicep_P,finalWrist_P)[0]
-                bicep_TO_wrist_Speed = calcSpeeds(finalForearm,finalBicep,finalWrist,finalForearm_P,finalBicep_P,finalWrist_P)[1]
+                bicep_TO_forearm_Speed = calcSpeeds(finalBicep,finalForearm,finalWrist,finalBicep_P,finalForearm_P,finalWrist_P)[0]
+                forearm_TO_wrist_Speed = calcSpeeds(finalBicep,finalForearm,finalWrist,finalBicep_P,finalForearm_P,finalWrist_P)[1]
 
             # Below calculates the neccessary change in XYZ for the push/pull motion
             if MODE == 1:
@@ -314,8 +314,8 @@ def set_location(xyzdict):
         print("Forearm Angle needed for pulling/pushing battery: "+str(finalForearm_P))
         print("Wrist Angle needed for pulling/pushing battery: "+str(finalWrist_P))
 
-    print('Speed ratio of forearm/bicep is = ' + str(forearm_TO_bicep_Speed))
-    print('Speed ratio of bicep/wrist is = ' + str(bicep_TO_wrist_Speed))
+    print('Speed ratio of bicep/forearm is = ' + str(bicep_TO_forearm_Speed))
+    print('Speed ratio of forearm/wrist is = ' + str(forearm_TO_wrist_Speed))
 
         
         #if not(BICEP_L_DOWN>thetaBaseN[1]>BICEP_L_UP):
@@ -330,7 +330,7 @@ def set_location(xyzdict):
         #print("Base Can't Rotate That Far, Current Limits are: "+str(BASE_L_DOWN)+"  -  "+str(BASE_L_UP))
 
 
-    return thetaBaseN[1], finalBicep, finalForearm, finalWrist, finalBicep_P, finalForearm_P, finalWrist_P, forearm_TO_bicep_Speed, bicep_TO_wrist_Speed
+    return thetaBaseN[1], finalBicep, finalForearm, finalWrist, finalBicep_P, finalForearm_P, finalWrist_P, bicep_TO_forearm_Speed, forearm_TO_wrist_Speed
 
 
 

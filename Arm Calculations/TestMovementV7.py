@@ -188,9 +188,9 @@ def calcSpeeds(A1,A2,B1,B2):
 
 
 # this method intakes the calculated speeds for the motors for push/pulls
-# It discover the best multiple to multiply these speeds in order to get usable integers while keeping the ratios of the speeds as true as possible
+# It discovers the best multiple to multiply these speeds in order to get usable integers while keeping the ratios of the speeds as true as possible
 # the calcSpeeds method will output non integers, however the motors can only move at integer speeds.
-# this method loops until an integer calculated speed exceeds our MAXSPEED, set at the beginnging of this code
+# this method loops until an integer calculated speed exceeds our MAXSPEED, set at the beginging of this code
 # it then selects the best possible option from all selections of integer speeds
 def calcSpeedIntegers(speed1,speed2):
     counter = 1
@@ -198,6 +198,7 @@ def calcSpeedIntegers(speed1,speed2):
     best_rounded_2 = 1000    
     best_percent_1 = 1000
     best_percent_2 = 1000
+    best_counter = 1
 
     while(counter*speed1 < MAXSPEED and counter*speed2 < MAXSPEED):
          
@@ -221,27 +222,29 @@ def calcSpeedIntegers(speed1,speed2):
         if current_percent_1 < best_percent_1 and current_percent_2 < best_percent_2:
             best_rounded_1 = rounded_current_1
             best_rounded_2 = rounded_current_2
+            best_counter = counter
 
         elif (current_percent_1 + current_percent_2)/2 < (best_percent_1 + best_percent_2)/2:
             best_rounded_1 = rounded_current_1
             best_rounded_2 = rounded_current_2 
+            best_counter = counter
 
         counter = counter +1
 
-    return ([best_rounded_1, best_rounded_2])
+    return ([best_rounded_1, best_counter, best_rounded_2])
 
 
 ###############################################   USER INPUT DATA BELOW    #######################################
 # XYZ input below
-PICKUP = {"X":-127,      
-        "Y":-127,       
-        "Z":145.74}      
+PICKUP = {"X":0,      
+        "Y":250,       
+        "Z":178}      
 
 #Desired wrist orientation in degrees, able to select anything from 0 to 180 degrees
 #90 degrees is straight parallel to ground
 #180 degrees is pointing straight up
 #0 degrees is pointing straight down
-Wrist_Orientation_D = 45
+Wrist_Orientation_D = 90
 Wrist_Orientation_Rads = math.radians(Wrist_Orientation_D)
 
 # mode controls if arm is going to pull battery out or in, or just a simple movement
@@ -395,8 +398,9 @@ def set_location(xyzdict):
     print("First wrist Angle needed for pulling/pushing battery: "+str(firstWrist_P))
     print('Unrounded initial speed ratio of bicep/forearm is = ' + str(unrounded_first_bicep_TO_forearm_Speed))
     print('Unrounded initial speed ratio of forearm/wrist is = ' + str(unrounded_first_forearm_TO_wrist_Speed))
-    print('First speed ratio of bicep/forearm is = ' + str(initialSpeeds[0]))
-    print('First speed ratio of forearm/wrist is = ' + str(initialSpeeds[1]))
+    print('First speed of bicep is = ' + str(initialSpeeds[0]))
+    print('First speed of forearm is = ' + str(initialSpeeds[1]))
+    print('First speed of wrist is = ' + str(initialSpeeds[2]))
 
 
     print("Final bicep Angle needed for pulling/pushing battery: "+str(finalBicep_P))
@@ -404,8 +408,9 @@ def set_location(xyzdict):
     print("Final wrist Angle needed for pulling/pushing battery: "+str(finalWrist_P))
     print('Unrounded final speed ratio of bicep/forearm is = ' + str(unrounded_final_bicep_TO_forearm_Speed))
     print('Unrounded final speed ratio of forearm/wrist is = ' + str(unrounded_final_forearm_TO_wrist_Speed))
-    print('Final speed ratio of bicep/forearm is = ' + str(finalSpeeds[0]))
-    print('Final speed ratio of forearm/wrist is = ' + str(finalSpeeds[1]))
+    print('Final speed of bicep is = ' + str(finalSpeeds[0]))
+    print('Final speed of forearm is = ' + str(finalSpeeds[1]))
+    print('Final speed of wrist is = ' + str(finalSpeeds[2]))
 
 
         #if not(BICEP_L_DOWN>thetaBaseN[1]>BICEP_L_UP):
@@ -420,7 +425,7 @@ def set_location(xyzdict):
         #print("Base Can't Rotate That Far, Current Limits are: "+str(BASE_L_DOWN)+"  -  "+str(BASE_L_UP))
 
 
-    return thetaBaseN[1], finalBicep, finalForearm, finalWrist, firstBicep_P, firstForearm_P, firstWrist_P, initialSpeeds[0], initialSpeeds[1], finalBicep_P, finalForearm_P, finalWrist_P, finalSpeeds[0], finalSpeeds[1], 
+    return thetaBaseN[1], finalBicep, finalForearm, finalWrist, firstBicep_P, firstForearm_P, firstWrist_P, initialSpeeds[0], initialSpeeds[1], initialSpeeds[2], finalBicep_P, finalForearm_P, finalWrist_P, finalSpeeds[0], finalSpeeds[1], finalSpeeds[2], 
 
 
 

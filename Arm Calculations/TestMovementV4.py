@@ -168,15 +168,15 @@ def adjustRhoZ(P,Z,theta):
 
 ###############################################   USER INPUT DATA BELOW    #######################################
 # XYZ input below
-PICKUP = {"X":150,      
-        "Y":150,       
-        "Z":100}      
+PICKUP = {"X":0,      
+        "Y":289,       
+        "Z":200}      
 
 #Desired wrist orientation in degrees, able to select anything from 0 to 180 degrees
 #90 degrees is straight parallel to ground
 #180 degrees is pointing straight up
 #0 degrees is pointing straight down
-Wrist_Orientation_D = 45
+Wrist_Orientation_D = 90
 Wrist_Orientation_Rads = math.radians(Wrist_Orientation_D)
 ###############################################   USER INPUT DATA ABOVE    #######################################
 
@@ -206,59 +206,58 @@ def set_location(xyzdict):
     thetaBaseN = calcBaseTheta(Xn,Yn)
 
 
-    if BASE_L_DOWN <= thetaBaseN[1] <= BASE_L_UP :
-        #guessBicepFromTriangles is an optimization variable that helps reduce the number of cycles.
-        thetaBicepN=guessBicepFromTriangles(Xn,Yn,Zn)
-        #print("Bicep angle guess based on triangles (rad and degrees) " + str([thetaBicepN]) + str([math.degrees(thetaBicepN)]))
-        updatedPZ = elbowCorrectionForPZ(pideal, Zn, thetaBicepN)
+    #guessBicepFromTriangles is an optimization variable that helps reduce the number of cycles.
+    #thetaBicepN=guessBicepFromTriangles(Xn,Yn,Zn)
+    thetaBicepN=math.radians(BICEP_L_MID)
 
-        #print("Updated P and Z are:    rho is " + str([updatedPZ[0]]) + "     Z is " + str([updatedPZ[1]]))
-        thetaForearmN = calcForearmTheta(updatedPZ[0],updatedPZ[1],thetaBicepN)   #  reworked
+    #print("Bicep angle guess based on triangles (rad and degrees) " + str([thetaBicepN]) + str([math.degrees(thetaBicepN)]))
+    updatedPZ = elbowCorrectionForPZ(pideal, Zn, thetaBicepN)
 
-        tempPZ = getPZ(Zn, thetaBicepN,thetaForearmN[2])
+    #print("Updated P and Z are:    rho is " + str([updatedPZ[0]]) + "     Z is " + str([updatedPZ[1]]))
+    thetaForearmN = calcForearmTheta(updatedPZ[0],updatedPZ[1],thetaBicepN)   #  reworked
+
+    tempPZ = getPZ(Zn, thetaBicepN,thetaForearmN[2])
         
-        #print("Temp  P and Z are:    rho is " + str([tempPZ[0]]) + "     Z is " + str([tempPZ[1]]))
-        countcycles = 0
+    #print("Temp  P and Z are:    rho is " + str([tempPZ[0]]) + "     Z is " + str([tempPZ[1]]))
+    countcycles = 0
     
 
-        while not(updatedPZ[0]-TOLERANCE)<tempPZ[0]<(updatedPZ[0]+TOLERANCE):
-            if tempPZ[0]>(updatedPZ[0]+1):
-                thetaBicepN = thetaBicepN+R_INCREMENT
-            else:
-                thetaBicepN = thetaBicepN-R_INCREMENT
+    while not(updatedPZ[0]-TOLERANCE)<tempPZ[0]<(updatedPZ[0]+TOLERANCE):
+        if tempPZ[0]>(updatedPZ[0]+1):
+            thetaBicepN = thetaBicepN+R_INCREMENT
+        else:
+            thetaBicepN = thetaBicepN-R_INCREMENT
             
-            updatedPZ = elbowCorrectionForPZ(pideal, Zn, thetaBicepN)
-            #print("Updated P and Z are:    rho is " + str([updatedPZ[0]]) + "     Z is " + str([updatedPZ[1]]))
-            thetaForearmN = calcForearmTheta(updatedPZ[0],updatedPZ[1],thetaBicepN) 
-            tempPZ = getPZ(Zn, thetaBicepN,thetaForearmN[2])
-            #print("NEWtemp P and Z are:    rho is " + str([tempPZ[0]]) + "     Z is " + str([tempPZ[1]]))
-            countcycles += 1
+        updatedPZ = elbowCorrectionForPZ(pideal, Zn, thetaBicepN)
+        #print("Updated P and Z are:    rho is " + str([updatedPZ[0]]) + "     Z is " + str([updatedPZ[1]]))
+        thetaForearmN = calcForearmTheta(updatedPZ[0],updatedPZ[1],thetaBicepN) 
+        tempPZ = getPZ(Zn, thetaBicepN,thetaForearmN[2])
+        #print("NEWtemp P and Z are:    rho is " + str([tempPZ[0]]) + "     Z is " + str([tempPZ[1]]))
+        countcycles += 1
 
 
-        finalBicep = math.degrees(thetaBicepN)
-        finalForearm = (thetaForearmN[1])
-        thetaWristND = calcWristTheta(finalBicep,finalForearm,Wrist_Orientation_D)[1]
-        finalWrist = thetaWristND 
+    finalBicep = math.degrees(thetaBicepN)
+    finalForearm = (thetaForearmN[1])
+    thetaWristND = calcWristTheta(finalBicep,finalForearm,Wrist_Orientation_D)[1]
+    finalWrist = thetaWristND 
 
 
-        print('BASE ANGLE = ' + str(thetaBaseN[1]))
-        print('BICEP ANGLE = ' + str(finalBicep))
-        print('FOREARM ANGLE = ' + str(finalForearm))
+    print('BASE ANGLE = ' + str(thetaBaseN[1]))
+    print('BICEP ANGLE = ' + str(finalBicep))
+    print('FOREARM ANGLE = ' + str(finalForearm))
 
-        print('WRIST ANGLE = ' + str(finalWrist))
-        print('Number of Cycles For Results = ' + str(countcycles))
+    print('WRIST ANGLE = ' + str(finalWrist))
+    print('Number of Cycles For Results = ' + str(countcycles))
 
         
-        if not(BICEP_L_DOWN>thetaBaseN[1]>BICEP_L_UP):
-            print("BICEP Can't Rotate That Far, Current Limits are: "+str(BICEP_L_DOWN)+"  -  "+str(BICEP_L_UP))
-        elif not(FOREARM_L_DOWN<thetaForearmN[1]<FOREARM_L_UP):
-            print("FOREARM Can't Rotate That Far, Current Limits are: "+str(FOREARM_L_DOWN)+"  -  "+str(FOREARM_L_UP))
-        elif not(WRIST_L_DOWN<thetaWristND<WRIST_L_UP):
-            print("WRIST Can't Rotate That Far, Current Limits are: "+str(WRIST_L_DOWN)+"  -  "+str(WRIST_L_UP))
+    if not(BICEP_L_DOWN>thetaBaseN[1]>BICEP_L_UP):
+        print("BICEP Can't Rotate That Far, Current Limits are: "+str(BICEP_L_DOWN)+"  -  "+str(BICEP_L_UP))
+    elif not(FOREARM_L_DOWN<thetaForearmN[1]<FOREARM_L_UP):
+        print("FOREARM Can't Rotate That Far, Current Limits are: "+str(FOREARM_L_DOWN)+"  -  "+str(FOREARM_L_UP))
+    elif not(WRIST_L_DOWN<thetaWristND<WRIST_L_UP):
+        print("WRIST Can't Rotate That Far, Current Limits are: "+str(WRIST_L_DOWN)+"  -  "+str(WRIST_L_UP))
 
-    else:
-        print('BASE ANGLE = ' + str(thetaBaseN[1]))
-        print("Base Can't Rotate That Far, Current Limits are: "+str(BASE_L_DOWN)+"  -  "+str(BASE_L_UP))
+
 
 
     return thetaBaseN[1], finalBicep, finalForearm, finalWrist

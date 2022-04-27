@@ -399,18 +399,15 @@ def simPosCheck(dxl_goal_inputs, dxlIDs):
 # time.sleep(5)
 # portTermination()
 
-dxlIDs =  [0, 1, 2, 3, 4]
-portInitialization('COM8', [0, 1, 2, 3, 4])
-dxlSetVelo([20,20,20,20,20], [0, 1, 2, 3, 4])
+# dxlIDs =  [0, 1, 2, 3, 4]
+# portInitialization('COM8', [0, 1, 2, 3, 4])
+# dxlSetVelo([20,20,20,20,20], [0, 1, 2, 3, 4])
 
-origin = [186, 126, 183]
-# bicep_vel = 20.0*4.01
-# forearm_vel = 20
-# wrist_vel = 20.0/0.33
-dxlSetVelo([22,4,19], [2, 3, 4])
-pull_final = [278, 110, 106]
+# origin = [186, 126, 183]
+# dxlSetVelo([22,4,19], [2, 3, 4])
+# pull_final = [278, 110, 106]
 
-wrist_up = [180, 110, 116]
+# wrist_up = [180, 110, 116]
 # down_facing_open =  [143, 216, 168, 203, 55]
 # down_facing_close = [205, 216, 168, 203, 55]
 # liftup_facingdown = [205, 221, 182, 181, 58]
@@ -420,17 +417,23 @@ wrist_up = [180, 110, 116]
 # lower_to_ground =   [205, 219, 191, 175, 60]
 # wrist_up = [200]
 
-motorRunWithInputs([90], [0])
-simMotorRun(origin, [2, 3, 4])
-motorRunWithInputs([145], [0])
-time.sleep(5)
-simMotorRun(pull_final, [2, 3, 4])
-time.sleep(5)
-dxlSetVelo([20,20,20,20,20], [0, 1, 2, 3, 4])
-motorRunWithInputs(wrist_up, [4, 3, 2])
-time.sleep(10)
 
-dxlPresAngle(dxlIDs)
+
+# motorRunWithInputs([90], [0])
+# simMotorRun(origin, [2, 3, 4])
+# motorRunWithInputs([145], [0])
+# time.sleep(5)
+# simMotorRun(pull_final, [2, 3, 4])
+# time.sleep(5)
+# dxlSetVelo([20,20,20,20,20], [0, 1, 2, 3, 4])
+# motorRunWithInputs(wrist_up, [4, 3, 2])
+# time.sleep(10)
+
+# dxlPresAngle(dxlIDs)
+
+
+
+
 
 # motorRunWithInputs(liftup_facingdown, dxlIDs)
 # time.sleep(1)
@@ -449,7 +452,7 @@ dxlPresAngle(dxlIDs)
 # motorRunWithInputs(lower_to_ground, dxlIDs)
 # time.sleep(1)
 
-portTermination()
+#portTermination()
 
 """portInitialization('COM3', [5, 6])
 

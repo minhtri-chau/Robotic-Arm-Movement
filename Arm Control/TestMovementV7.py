@@ -64,7 +64,7 @@ MAXSPEED = 40 #max speed that we want motors to turn, used for rounding speeds t
 GROUND_RECEIVER_LENGTH = 89 # length needed to pull/push battery free of ground receiver
 GROUND_RECEIVER_CLEAR_LENGTH = 10 # desired length for battery to clear in front of ground receiver
 DRONE_RECEIVER_LENGTH = 142 # length needed to pull/push battery free of drone receiver
-DRONE_RECEIVER_CLEAR_LENGTH = 25 # length needed to pull/push battery to clear in front of drone receiver
+DRONE_RECEIVER_CLEAR_LENGTH = 50 # length needed to pull/push battery to clear in front of drone receiver
 
 
 #This method returns the calculated forearm theta based on measurements of the arm
